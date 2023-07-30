@@ -1,6 +1,7 @@
 # Toggle Docstrings
 
-![Demo](images/logo.png)
+
+[<img src="images/logo.png" width="250"/>](images/logo.png)
 
 
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/grayrigel)
