@@ -11,9 +11,12 @@
     "type": "git",
     "url": "https://github.com/Vikasdubey0551/toggle-docstrings.git"
   },
-  "publisher": "Vikasdubey0551",
+  "publisher": "vikasdubey055",
   "categories": [
-    "Python", "Jupyter", "Docstrings", "Notebooks"
+    "Programming Languages", "Notebooks"
+  ],
+  "keywords": [
+  "Docstrings", "Notebooks","Python", "Jupyter"
   ],
   "activationEvents": [    
     "onStartupFinished"
@@ -59,7 +62,7 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.80.0",
+    "@types/vscode": "^1.70.0",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "20.2.5",
