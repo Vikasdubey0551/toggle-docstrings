@@ -2,7 +2,7 @@
   "name": "toggle-docstrings",
   "displayName": "Toggle Docstrings",
   "description": "A simple extension/toggle docstrings (Primarily for Python/Jupyter)",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.70.0"
   },
@@ -26,12 +26,12 @@
   "menus": {
       "editor/title": [
         {
-          "when": "editorIsOpen && isWorkspaceTrusted && isFileSystemResource && !isFoldActive",
+          "when": "editorIsOpen && isWorkspaceTrusted && isFileSystemResource && !isFoldActive && isPythonFile",
           "command": "toggle-docstrings.hideDocstrings",
           "group": "navigation"
         },
         {
-          "when": "editorIsOpen && isWorkspaceTrusted && isFileSystemResource && isFoldActive",
+          "when": "editorIsOpen && isWorkspaceTrusted && isFileSystemResource && isFoldActive && isPythonFile",
           "command": "toggle-docstrings.showDocstrings",
           "group": "navigation"
         }

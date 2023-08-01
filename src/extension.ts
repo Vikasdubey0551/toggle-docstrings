@@ -1,18 +1,29 @@
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
-
   let isFoldActive: boolean = false;
+
+  function updateContextForPythonFile(document: vscode.TextDocument) {
+    const languageId = document.languageId;
+    const isPythonFile = languageId === 'python';
+    vscode.commands.executeCommand('setContext', 'isPythonFile', isPythonFile);
+  }
 
   vscode.window.onDidChangeVisibleTextEditors((editors) => {
     editors.forEach((editor) => {
       const docUri = editor.document.uri;
-      vscode.commands.executeCommand('editor.unfoldAll');
-      vscode.commands.executeCommand('setContext', 'isFoldActive', false);
+      updateContextForPythonFile(editor.document);
     });
   });
-  context.subscriptions.push(vscode.commands.registerCommand('toggle-docstrings.hideDocstrings', async () => {
 
+  // Update context when extension is activated
+  const activeEditor = vscode.window.activeTextEditor;
+  if (activeEditor) {
+    updateContextForPythonFile(activeEditor.document);
+  }
+
+  context.subscriptions.push(vscode.commands.registerCommand('toggle-docstrings.hideDocstrings', async () => {
+    if (!isFoldActive) {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
         return;
@@ -42,16 +53,19 @@ export function activate(context: vscode.ExtensionContext) {
             const startPos = new vscode.Position(lineIndex, startChar);
             const endPos = new vscode.Position(lineIndex, endChar);
             docstrings.push(new vscode.Selection(startPos, endPos));
+            // Reset single-line docstring flag when a new docstring starts
             isSingleLineDocstring = true;
           }
         } else if (isInDocstring && lineText.endsWith('"""') || lineText.endsWith("'''")) {
           isSingleLineDocstring = false;
+          // Include the last line of a multi-line docstring
           const startPos = new vscode.Position(lineIndex, 0);
           const endPos = new vscode.Position(lineIndex, lineText.length);
           docstrings.push(new vscode.Selection(startPos, endPos));
         }
 
         if (isInDocstring && isSingleLineDocstring) {
+          // Skip single-line docstrings
           continue;
         }
 
@@ -67,6 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
       await vscode.commands.executeCommand('editor.fold');
 
       editor.selections = [];
+
       if (docstrings.length > 0) {
         const firstLine = docstrings[0].start.line;
         const firstChar = docstrings[0].start.character;
@@ -75,15 +90,17 @@ export function activate(context: vscode.ExtensionContext) {
         editor.selection = new vscode.Selection(position, position);
       }
 
-    isFoldActive = true;
-    vscode.commands.executeCommand('setContext', 'isFoldActive', true);
-
+      isFoldActive = true;
+      vscode.commands.executeCommand('setContext', 'isFoldActive', isFoldActive);
+    }
   }));
 
   context.subscriptions.push(vscode.commands.registerCommand('toggle-docstrings.showDocstrings', async () => {
+    if (isFoldActive) {
       isFoldActive = false;
       vscode.commands.executeCommand('editor.unfoldAll');
-      vscode.commands.executeCommand('setContext', 'isFoldActive', false);
+      vscode.commands.executeCommand('setContext', 'isFoldActive', isFoldActive);
+    }
   }));
 }
 
