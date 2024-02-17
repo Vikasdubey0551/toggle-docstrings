@@ -2,7 +2,7 @@
   "name": "toggle-docstrings",
   "displayName": "Toggle Docstrings",
   "description": "A simple extension/toggle docstrings (Primarily for Python/Jupyter)",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "engines": {
     "vscode": "^1.70.0"
   },
