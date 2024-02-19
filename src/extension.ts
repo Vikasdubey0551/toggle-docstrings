@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand('toggle-docstrings.hideDocstrings', async () => {
         const editor = vscode.window.activeTextEditor;
-        if (!editor || editor.document.languageId !== 'python' || isFoldActive) {
+        if (!editor || editor.document.languageId !== 'python') {
             return;
         }
 
@@ -25,11 +25,13 @@ export function activate(context: vscode.ExtensionContext) {
         const lineText = editor.document.lineAt(cursorPosition.line).text.trim();
 
         if (lineText.startsWith('"""') || lineText.startsWith("'''") || lineText.endsWith('"""') || lineText.endsWith("'''")) {
-            vscode.window.showInformationMessage("Cursor is inside a docstring. Skipping fold to avoid unfolding.");
-            return;
+            if (cursorPosition.line > 0) {
+                const newPosition = cursorPosition.with(cursorPosition.line - 1, cursorPosition.character);
+                editor.selection = new vscode.Selection(newPosition, newPosition);
+                editor.revealRange(new vscode.Range(newPosition, newPosition));
+            }
         }
 
-        // Proceed with folding logic if the cursor is not detected inside a docstring
         await vscode.commands.executeCommand('editor.foldAllBlockComments');
         isFoldActive = true;
         vscode.commands.executeCommand('setContext', 'isFoldActive', isFoldActive);
